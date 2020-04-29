@@ -313,6 +313,10 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
             Log.d("MSH", selection.toString());
             Log.d("MSH", selectionArgs.toString());
 
+            selection.append(" AND " + MediaStore.Images.Media.HEIGHT + " > 0");
+            selection.append(" AND " + MediaStore.Images.Media.WIDTH + " > 0");
+            selection.append(" AND " + MediaStore.Images.Media.DATE_TAKEN + " > 0");
+
 
             if (mMimeTypes != null && mMimeTypes.size() > 0) {
                 selection.append(" AND " + Images.Media.MIME_TYPE + " IN (");
@@ -492,6 +496,9 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
                 FLog.e(ReactConstants.TAG, "Could not get width/height for " + photoUri.toString(), e);
                 return false;
             }
+        }
+        if (width <= 0 || height <= 0) {
+            return false;
         }
         image.putDouble("width", width);
         image.putDouble("height", height);
