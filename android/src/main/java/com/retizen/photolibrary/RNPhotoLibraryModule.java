@@ -73,6 +73,7 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
 
     private static final String SELECTION_BUCKET = Images.Media.BUCKET_DISPLAY_NAME + " = ?";
     private static final String SELECTION_DATE_TAKEN = Images.Media.DATE_TAKEN + " < ?";
+    private static final String SELECTION_DATE_TAKEN_ASC = Images.Media.DATE_TAKEN + " > ?";
 
     public RNPhotoLibraryModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -273,7 +274,7 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
             StringBuilder selection = new StringBuilder("1");
             List<String> selectionArgs = new ArrayList<>();
             if (!TextUtils.isEmpty(mAfter)) {
-                selection.append(" AND " + SELECTION_DATE_TAKEN);
+                selection.append(" AND " + (mOrderByAsc ? SELECTION_DATE_TAKEN_ASC : SELECTION_DATE_TAKEN));
                 selectionArgs.add(mAfter);
             }
             if (!TextUtils.isEmpty(mGroupName)) {
