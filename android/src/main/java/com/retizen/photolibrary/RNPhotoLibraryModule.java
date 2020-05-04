@@ -364,15 +364,17 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
     }
 
     private static void putPageInfo(Cursor media, WritableMap response, int limit) {
-        WritableMap pageInfo = new WritableNativeMap();
-        pageInfo.putBoolean("has_next_page", limit < media.getCount());
-        if (limit < media.getCount()) {
+        try {
+            WritableMap pageInfo = new WritableNativeMap();
+            pageInfo.putBoolean("has_next_page", limit < media.getCount());
             media.moveToPosition(limit - 1);
             pageInfo.putString(
                     "end_cursor",
                     media.getString(media.getColumnIndex(Images.Media.DATE_TAKEN)));
+            response.putMap("page_info", pageInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        response.putMap("page_info", pageInfo);
     }
 
     private static void putEdges(
