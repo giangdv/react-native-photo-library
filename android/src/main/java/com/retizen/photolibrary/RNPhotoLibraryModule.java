@@ -212,8 +212,8 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
 
         boolean orderByAsc = params.hasKey("orderByAsc") ? params.getBoolean("orderByAsc") : false;
 
-        long beginCreated = params.hasKey("beginCreated") ? params.getInt("beginCreated") : 0;
-        long endCreated = params.hasKey("endCreated") ? params.getInt("endCreated") : 0;
+        double beginCreated = params.hasKey("beginCreated") ? params.getDouble("beginCreated") : 0;
+        double endCreated = params.hasKey("endCreated") ? params.getDouble("endCreated") : 0;
 
         new GetMediaTask(
                 getReactApplicationContext(),
@@ -242,8 +242,8 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
         private final String mAssetType;
 
         private final boolean mOrderByAsc;
-        private final long mBeginCreated;
-        private final long mEndCreated;
+        private final double mBeginCreated;
+        private final double mEndCreated;
 
         private GetMediaTask(
                 ReactContext context,
@@ -253,8 +253,8 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
                 @Nullable ReadableArray mimeTypes,
                 String assetType,
                 boolean orderByAsc,
-                long beginCreated,
-                long endCreated,
+                double beginCreated,
+                double endCreated,
                 Promise promise) {
             super(context);
             mContext = context;

@@ -195,8 +195,8 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)params
     
     bool orderByAsc = [RCTConvert BOOL:params[@"orderByAsc"]];
     
-    NSUInteger const beginCreated = [RCTConvert NSInteger:params[@"beginCreated"]];
-    NSUInteger const endCreated = [RCTConvert NSInteger:params[@"endCreated"]];
+    double beginCreated = [params[@"beginCreated"] doubleValue];
+    double endCreated = [params[@"endCreated"] doubleValue];
     
     // If groupTypes is "all", we want to fetch the SmartAlbum "all photos". Otherwise, all
     // other groupTypes values require the "album" collection type.
