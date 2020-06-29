@@ -316,7 +316,7 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
 
             selection.append(" AND " + MediaStore.Images.Media.HEIGHT + " > 0");
             selection.append(" AND " + MediaStore.Images.Media.WIDTH + " > 0");
-            selection.append(" AND " + MediaStore.Images.Media.DATE_TAKEN + " > 0");
+            // selection.append(" AND " + MediaStore.Images.Media.DATE_TAKEN + " > 0");
 
 
             if (mMimeTypes != null && mMimeTypes.size() > 0) {
