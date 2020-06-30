@@ -284,12 +284,12 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
 
             if (mBeginCreated > 0) {
                 selection.append(" AND " + MediaStore.MediaColumns.DATE_ADDED + " > ?");
-                selectionArgs.add(String.valueOf(mBeginCreated * 1000d));
+                selectionArgs.add(String.valueOf(mBeginCreated));
             }
 
             if (mEndCreated > 0) {
                 selection.append(" AND " + MediaStore.MediaColumns.DATE_ADDED + " < ?");
-                selectionArgs.add(String.valueOf(mEndCreated * 1000d));
+                selectionArgs.add(String.valueOf(mEndCreated));
             }
 
             if (mAssetType.equals(ASSET_TYPE_PHOTOS)) {
