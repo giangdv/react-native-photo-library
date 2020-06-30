@@ -63,7 +63,7 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
             Images.Media._ID,
             Images.Media.MIME_TYPE,
             Images.Media.BUCKET_DISPLAY_NAME,
-            Images.Media.DATE_TAKEN,
+            MediaStore.MediaColumns.DATE_ADDED,
             MediaStore.MediaColumns.WIDTH,
             MediaStore.MediaColumns.HEIGHT,
             Images.Media.LONGITUDE,
@@ -72,8 +72,8 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
     };
 
     private static final String SELECTION_BUCKET = Images.Media.BUCKET_DISPLAY_NAME + " = ?";
-    private static final String SELECTION_DATE_TAKEN = Images.Media.DATE_TAKEN + " < ?";
-    private static final String SELECTION_DATE_TAKEN_ASC = Images.Media.DATE_TAKEN + " > ?";
+    private static final String SELECTION_DATE_ADD = MediaStore.MediaColumns.DATE_ADDED + " < ?";
+    private static final String SELECTION_DATE_ADD_ASC = MediaStore.MediaColumns.DATE_ADDED + " > ?";
 
     public RNPhotoLibraryModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -274,7 +274,7 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
             StringBuilder selection = new StringBuilder("1");
             List<String> selectionArgs = new ArrayList<>();
             if (!TextUtils.isEmpty(mAfter)) {
-                selection.append(" AND " + (mOrderByAsc ? SELECTION_DATE_TAKEN_ASC : SELECTION_DATE_TAKEN));
+                selection.append(" AND " + (mOrderByAsc ? SELECTION_DATE_ADD_ASC : SELECTION_DATE_ADD));
                 selectionArgs.add(mAfter);
             }
             if (!TextUtils.isEmpty(mGroupName)) {
@@ -283,12 +283,12 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
             }
 
             if (mBeginCreated > 0) {
-                selection.append(" AND " + Images.Media.DATE_TAKEN + " > ?");
+                selection.append(" AND " + MediaStore.MediaColumns.DATE_ADDED + " > ?");
                 selectionArgs.add(String.valueOf(mBeginCreated * 1000d));
             }
 
             if (mEndCreated > 0) {
-                selection.append(" AND " + Images.Media.DATE_TAKEN + " < ?");
+                selection.append(" AND " + MediaStore.MediaColumns.DATE_ADDED + " < ?");
                 selectionArgs.add(String.valueOf(mEndCreated * 1000d));
             }
 
@@ -316,7 +316,7 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
 
             selection.append(" AND " + MediaStore.Images.Media.HEIGHT + " > 0");
             selection.append(" AND " + MediaStore.Images.Media.WIDTH + " > 0");
-            // selection.append(" AND " + MediaStore.Images.Media.DATE_TAKEN + " > 0");
+            selection.append(" AND " + MediaStore.MediaColumns.DATE_ADDED + " > 0");
 
 
             if (mMimeTypes != null && mMimeTypes.size() > 0) {
@@ -341,7 +341,7 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
                         PROJECTION,
                         selection.toString(),
                         selectionArgs.toArray(new String[selectionArgs.size()]),
-                        Images.Media.DATE_TAKEN + " " + dir + ", " + Images.Media.DATE_MODIFIED + " " + dir + " LIMIT " +
+                        MediaStore.MediaColumns.DATE_ADDED + " " + dir + ", " + Images.Media.DATE_MODIFIED + " " + dir + " LIMIT " +
                                 (mFirst + 1)); // set LIMIT to first + 1 so that we know how to populate page_info
                 if (media == null) {
                     mPromise.reject(ERROR_UNABLE_TO_LOAD, "Could not get media");
@@ -370,7 +370,7 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
             media.moveToPosition(limit - 1);
             pageInfo.putString(
                     "end_cursor",
-                    media.getString(media.getColumnIndex(Images.Media.DATE_TAKEN)));
+                    media.getString(media.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED)));
             response.putMap("page_info", pageInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -387,7 +387,7 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
         int idIndex = media.getColumnIndex(Images.Media._ID);
         int mimeTypeIndex = media.getColumnIndex(Images.Media.MIME_TYPE);
         int groupNameIndex = media.getColumnIndex(Images.Media.BUCKET_DISPLAY_NAME);
-        int dateTakenIndex = media.getColumnIndex(Images.Media.DATE_TAKEN);
+        int dateAddIndex = media.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED);
         int widthIndex = media.getColumnIndex(MediaStore.MediaColumns.WIDTH);
         int heightIndex = media.getColumnIndex(MediaStore.MediaColumns.HEIGHT);
         int longitudeIndex = media.getColumnIndex(Images.Media.LONGITUDE);
@@ -400,7 +400,7 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
             boolean imageInfoSuccess =
                     putImageInfo(resolver, media, node, idIndex, widthIndex, heightIndex, dataIndex, mimeTypeIndex);
             if (imageInfoSuccess) {
-                putBasicNodeInfo(media, node, mimeTypeIndex, groupNameIndex, dateTakenIndex);
+                putBasicNodeInfo(media, node, mimeTypeIndex, groupNameIndex, dateAddIndex);
                 putLocationInfo(media, node, longitudeIndex, latitudeIndex);
 
                 edge.putMap("node", node);
@@ -420,10 +420,10 @@ public class RNPhotoLibraryModule extends ReactContextBaseJavaModule {
             WritableMap node,
             int mimeTypeIndex,
             int groupNameIndex,
-            int dateTakenIndex) {
+            int dateAddIndex) {
         node.putString("type", media.getString(mimeTypeIndex));
         node.putString("group_name", media.getString(groupNameIndex));
-        node.putDouble("timestamp", media.getLong(dateTakenIndex) / 1000d);
+        node.putDouble("timestamp", media.getLong(dateAddIndex));
     }
 
     private static boolean putImageInfo(
